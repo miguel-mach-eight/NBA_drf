@@ -20,13 +20,13 @@ class NBAPlayersViewSet(viewsets.ViewSet):
 			serializer.save()
 			return Response(serializer.data, status = status.HTTP_201_CREATED)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)	
-
+		#POST
 	def retrieve(self, request, pk=None):
 		query_set = NBAplayers.objects.all()
 		player = get_object_or_404(query_set, pk=pk)
 		serializer = NBAplayersSerializer(player)
 		return Response(serializer.data)
-
+		#PUT 
 	def update(self, request, pk=None):
 		player = NBAplayers.objects.get(pk=pk)
 		serializer = NBAplayersSerializer(player, data=request.	data)
@@ -34,7 +34,7 @@ class NBAPlayersViewSet(viewsets.ViewSet):
 			serializer.save()
 			return Response(serializer.data)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+		#DELETE
 	def destroy(self, request, pk=None):
 		player = NBAplayers.objects.get(pk=pk)
 		player.delete()

@@ -8,6 +8,6 @@ router.register('players', NBAPlayersViewSet, basename = 'Players list')
 
 
 urlpatterns = [
-	path('viewset/', include(router.urls)),
+	path('', include(router.urls)),
 	path('viewset/<int:pk/', include(router.urls)),
 ]
