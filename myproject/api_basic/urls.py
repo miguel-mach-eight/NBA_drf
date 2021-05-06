@@ -8,6 +8,10 @@ router.register('players', NBAPlayersViewSet, basename = 'Players list')
 
 
 urlpatterns = [
+    #djoser basic authentication
+    path('', include('djoser.urls')),
+    path('', include('djoser.urls.authtoken')),
+    #Routers URLs
 	path('', include(router.urls)),
-	path('viewset/<int:pk/', include(router.urls)),
+	path('players/<int:pk>/', include(router.urls)),
 ]
