@@ -19,6 +19,6 @@ from django.urls import path, include, re_path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('api_basic.urls')),
-    #djoser basic authentication
+    path('api-auth/', include('rest_framework.urls')) #login button
 ]
 
