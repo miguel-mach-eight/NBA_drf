@@ -16,10 +16,11 @@ class TestUserBase(TestCase):
         User = get_user_model()
 
         self.user = User.objects.create_user(username='randomuser',
-                                             password='randompassword')
+                                            email='example@example.com',
+                                            password='randompassword',)
         self.user.role = self.user_type
         self.user.save()
-
+        
 class ReadWriteUserTest(TestUserBase):
 
     url = urls.reverse('Players list-list')
@@ -27,7 +28,7 @@ class ReadWriteUserTest(TestUserBase):
 
     def setUp(self):
         super().setUp()
-
+        self.client.force_login(self.user)
 
         # self.assertTrue(self.client.login(username=self.username,
                                           #password=self.password))
@@ -37,6 +38,7 @@ class ReadWriteUserTest(TestUserBase):
         self.assertEqual(response.status_code, 200)
 
     def test_read_write_user_POST_REQUEST(self):
+        
         response = self.client.post(self.url, {
             'id':'4',
             'first_name':'John',
@@ -53,13 +55,15 @@ class ReadOnlyUserTest(TestUserBase):
 
     def setUp(self):
         super().setUp()
+        self.client.force_login(self.user)
+
 
         #self.assertTrue(self.client.login(username=self.username,
                                           #password=self.password))
 
     def test_read_only_user_GET_REQUEST(self):
         response = self.client.get(self.url)
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.status_code, 200)
 
     def test_read_write_user_POST_REQUEST(self):
         response = self.client.post(self.url, {
@@ -68,4 +72,23 @@ class ReadOnlyUserTest(TestUserBase):
             'h_meters' : '1.96',
             'last_name' : 'Figueroa'
             })
-        self.assertEquals(401, response.status_code)    
+        self.assertEquals(response.status_code, 403)
+
+class NonAuthenticatedTest(TestCase):
+    
+    url = urls.reverse('Players list-list')
+
+        #self.client.force_logout()
+
+    def test_non_authenticated_user_GET_REQUEST(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_non_authenticated_user_POST_REQUEST(self):
+        response = self.client.post(self.url, {
+            'first_name':'Miguel',
+            'h_in' : '77',
+            'h_meters' : '1.96',
+            'last_name' : 'Figueroa'
+            })
+        self.assertEquals(response.status_code, 401)
